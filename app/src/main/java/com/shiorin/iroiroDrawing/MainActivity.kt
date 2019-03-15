@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.util.Log
+import android.widget.ImageButton
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -12,7 +13,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val cv : CanvasView = findViewById(R.id.canvas_view)
-        val button : Button = findViewById(R.id.clear_button)
+        val button : ImageButton = findViewById(R.id.clear_button)
 
 
         button.setOnClickListener {
