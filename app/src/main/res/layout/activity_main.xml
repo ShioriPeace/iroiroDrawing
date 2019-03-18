@@ -33,6 +33,13 @@
                 android:layout_alignBottom="@+id/canvas_view"
                 app:srcCompat="@android:drawable/ic_menu_delete"/>
 
+        <TextureView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/center_view"/>
+
     </RelativeLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
