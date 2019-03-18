@@ -1,6 +1,7 @@
 package com.shiorin.iroiroDrawing
 
 import android.annotation.SuppressLint
+import android.annotation.TargetApi
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
@@ -8,6 +9,7 @@ import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
 import android.hardware.camera2.*
 import android.media.ImageReader
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -120,9 +122,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
-
-    @SuppressLint("NewApi")
+    @TargetApi(Build.VERSION_CODES.M)
     private fun requestCameraPermission() {
         if(shouldShowRequestPermissionRationale(android.Manifest.permission.CAMERA)){
             AlertDialog.Builder(baseContext) //android
