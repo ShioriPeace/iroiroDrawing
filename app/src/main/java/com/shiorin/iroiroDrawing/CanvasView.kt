@@ -26,7 +26,6 @@ class CanvasView @JvmOverloads constructor(
         }
     }
 
-
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
@@ -36,7 +35,6 @@ class CanvasView @JvmOverloads constructor(
             Log.e("path","$pathList")
 
     }
-
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         event?.let {
