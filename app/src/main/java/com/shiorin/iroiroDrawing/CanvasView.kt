@@ -18,6 +18,7 @@ class CanvasView @JvmOverloads constructor(
     var paint: Paint
     private var drawingPath : Path = Path()
 
+
     init {
         paint = Paint().also {
             it.color = Color.RED
@@ -29,9 +30,12 @@ class CanvasView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
-        pathList.forEach {
-            canvas?.drawPath(it,paint)
-        }
+
+            pathList.forEach {
+                canvas?.drawPath(it,paint)
+            }
+            Log.e("path","$pathList")
+
     }
 
 
@@ -41,7 +45,6 @@ class CanvasView @JvmOverloads constructor(
                 MotionEvent.ACTION_DOWN ->{
                     drawingPath.moveTo(it.x,it.y)
                     pathList.add(drawingPath)
-                    invalidate()
                 }
                 MotionEvent.ACTION_MOVE ->{
                     drawingPath.lineTo(it.x,it.y)
@@ -59,9 +62,11 @@ class CanvasView @JvmOverloads constructor(
         }?: return true
     }
 
-    fun allDelete(){
+    fun allDelete() {
         Log.e("delete","delete")
-        pathList.clear()
+        invalidate()
+        drawingPath.reset()
+
     }
 
 }
