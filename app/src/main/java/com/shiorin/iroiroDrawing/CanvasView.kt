@@ -29,7 +29,7 @@ class CanvasView @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-            pathList.forEach {
+        pathList.forEach {
                 canvas?.drawPath(it,paint)
             }
             Log.e("path","$pathList")
