@@ -25,6 +25,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
+    companion object {
+        const val PERMISSION_WRITE_STORAGE = 1000
+        const val PERMISSION_READ_STORAGE = 1001
+    }
 
     private  lateinit var textureView: TextureView
     private var imageReader: ImageReader? = null
@@ -40,6 +44,19 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        //camera
+        textureView = findViewById(R.id.cameraView)
+        textureView.surfaceTextureListener = surfaceTextureListener
+        startBackgroundThread()
+
+        val writePermission = ContextCompat.checkSelfPermission(this,android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        val readPermission = ContextCompat.checkSelfPermission(this,android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
+        if ((writePermission != PackageManager.PERMISSION_GRANTED) || (readPermission != PackageManager.PERMISSION_GRANTED)){
+            requestStoragePermission()
+        }
+
         //drawing
         val cv : CanvasView = findViewById(R.id.canvas_view)
         val button : ImageButton = findViewById(R.id.clear_button)
@@ -47,10 +64,6 @@ class MainActivity : AppCompatActivity() {
             cv.allDelete()
         }
 
-        //camera
-        textureView = findViewById(R.id.cameraView)
-        textureView.surfaceTextureListener = surfaceTextureListener
-        startBackgroundThread()
 
     }
 
@@ -74,18 +87,19 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
+    //カメラを起動する時に接続できているかを確認するCallback
     private val stateCallback = object : CameraDevice.StateCallback(){
+        //カメラ接続完了
         override fun onOpened(camera: CameraDevice) {
             this@MainActivity.cameraDevice = camera
             createCameraPreviewSession()
         }
-
+        //カメラ切断
         override fun onDisconnected(camera: CameraDevice) {
             camera.close()
             this@MainActivity.cameraDevice = null
         }
-
+        //カメラ接続エラー
         override fun onError(camera: CameraDevice, error: Int) {
             onDisconnected(camera)
             finish()
@@ -122,7 +136,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
+    //カメラ利用許可のダイヤログを表示
+
     private fun requestCameraPermission() {
         if(shouldShowRequestPermissionRationale(android.Manifest.permission.CAMERA)){
             AlertDialog.Builder(baseContext) //android
@@ -162,5 +177,39 @@ class MainActivity : AppCompatActivity() {
         backgroundHandler = Handler(backgroundThread?.looper)
 
     }
+
+    private fun requestStoragePermission(){
+        //書き込み
+        if(shouldShowRequestPermissionRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+            AlertDialog.Builder(baseContext)
+                .setMessage("Permission Check")
+                .setPositiveButton(android.R.string.ok){ _,_ ->
+                    requestPermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_WRITE_STORAGE)
+                }
+                .setNegativeButton(android.R.string.cancel){_,_ ->
+                    finish()
+                }
+                .create()
+        }else{
+            requestPermissions(arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE), PERMISSION_WRITE_STORAGE)
+        }
+
+        //読み込み
+        if (shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)){
+            AlertDialog.Builder(baseContext)
+                    .setMessage("Permission Check")
+                .setPositiveButton(android.R.string.cancel){ _, _ ->
+                    requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_READ_STORAGE)
+                }
+                .setNegativeButton(android.R.string.cancel){ _, _  ->
+                    finish()
+                }
+                .create()
+        }else{
+            requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_READ_STORAGE)
+        }
+    }
+
+
 
 }

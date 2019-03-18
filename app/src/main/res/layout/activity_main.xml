@@ -10,7 +10,13 @@
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent" tools:layout_editor_absoluteY="0dp"
-            tools:layout_editor_absoluteX="0dp">
+            tools:layout_editor_absoluteX="0dp" android:orientation="horizontal">
+
+        <TextureView
+                android:id="@+id/cameraView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/center_view"/>
 
         <View
                 android:id="@+id/center_view"
@@ -33,11 +39,7 @@
                 android:layout_alignBottom="@+id/canvas_view"
                 app:srcCompat="@android:drawable/ic_menu_delete"/>
 
-        <TextureView
-                android:id="@+id/cameraView"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_above="@+id/center_view"/>
+
 
     </RelativeLayout>
 
