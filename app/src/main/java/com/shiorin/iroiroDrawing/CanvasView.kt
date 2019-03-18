@@ -31,8 +31,6 @@ class CanvasView(context: Context?, attrs:AttributeSet?) : View(context,attrs) {
     }
 
 
-
-
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent?): Boolean {
 
