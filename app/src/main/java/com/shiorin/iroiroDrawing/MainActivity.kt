@@ -5,15 +5,12 @@ import android.annotation.TargetApi
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.ImageFormat
-import android.graphics.SurfaceTexture
+import android.graphics.*
 import android.hardware.camera2.*
 import android.media.ImageReader
-import android.os.Build
+import android.os.*
+import android.provider.DocumentsContract
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
 import android.widget.Button
 import android.util.Log
 import android.util.Size
@@ -22,9 +19,11 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.View
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import kotlinx.android.synthetic.main.activity_main.*
-import java.io.File
+import java.io.*
+import java.nio.file.Files
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
@@ -41,6 +40,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var previewRequestBuilder: CaptureRequest.Builder
     private lateinit var previewRequest: CaptureRequest
     private lateinit var captureSession: CameraCaptureSession
+    private lateinit var bitmap: Bitmap
     private var backgroundThread: HandlerThread? = null
     private var backgroundHandler: Handler? = null
 
@@ -231,12 +231,13 @@ class MainActivity : AppCompatActivity() {
         event?.let {
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    
+                    onShutter()
                 }
                 MotionEvent.ACTION_MOVE -> {
 
                 }
                 MotionEvent.ACTION_UP -> {
+                    onShutter()
 
                 }
                 else -> {
@@ -246,4 +247,51 @@ class MainActivity : AppCompatActivity() {
             return true
         } ?: return true
     }
+
+    private fun onShutter(){
+        val appDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"cameraPreview")
+        if(!appDir.exists()){
+            appDir.mkdirs()
+        }
+
+        try {
+            val filename = "iroiroDrawing.jpg"
+            var savefile : File? = null
+
+
+            captureSession.stopRepeating()
+            if (textureView.isAvailable){
+                savefile = File(appDir,filename)
+                val fos = FileOutputStream(savefile)
+                val bitmap = textureView.bitmap
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100,fos)
+                Log.e("bitmap","$savefile")
+                fos.close()
+            }
+
+            if (savefile != null){
+                Log.d("edulog", "Image Saved On: $savefile")
+                Toast.makeText(this, "Saved: $savefile", Toast.LENGTH_SHORT).show()
+            }
+
+            } catch (e:CameraAccessException) {
+            Log.d("edulog", "CameraAccessException_Error: $e")
+        } catch (e:FileNotFoundException){
+            Log.d("edulog", "FileNotFoundException_Error: $e")
+        } catch (e:IOException){
+            Log.d("edulog", "IOException_Error: $e")
+        }
+
+        captureSession.setRepeatingRequest(previewRequest,null,null)
+    }
+
+    fun getAlbumStorageDir(albumName:String){
+        val file: File = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),albumName)
+
+
+
+    }
+
+
 }
+
