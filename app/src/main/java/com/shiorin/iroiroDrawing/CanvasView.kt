@@ -1,14 +1,12 @@
 package com.shiorin.iroiroDrawing
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.Path
+import android.graphics.*
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
+import com.shiorin.iroiroDrawing.MainActivity
 
 class CanvasView @JvmOverloads constructor(
     context: Context?, attrs:AttributeSet? = null, defStyleSttr:Int = 0) : View(context,attrs,defStyleSttr) {
@@ -30,6 +28,7 @@ class CanvasView @JvmOverloads constructor(
         super.onDraw(canvas)
 
         pathList.forEach {
+               // paint.setARGB(255,)
                 canvas?.drawPath(it,paint)
             }
             Log.e("path","$pathList")

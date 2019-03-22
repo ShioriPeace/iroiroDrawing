@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.*
 import android.hardware.camera2.*
@@ -21,10 +22,13 @@ import android.view.View
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toColor
+import androidx.core.graphics.toColorLong
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.*
 import java.nio.file.Files
 import java.util.*
+
 
 class MainActivity : AppCompatActivity() {
     companion object {
@@ -41,6 +45,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var previewRequest: CaptureRequest
     private lateinit var captureSession: CameraCaptureSession
     private lateinit var bitmap: Bitmap
+    private var getColor:Int = 0
+    private var pixel : Int = 0
+    lateinit var pixels : IntArray
+
     private var backgroundThread: HandlerThread? = null
     private var backgroundHandler: Handler? = null
 
@@ -232,6 +240,8 @@ class MainActivity : AppCompatActivity() {
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> {
                     onShutter()
+                    pixel = bitmap.getPixel(it.x.toInt(),it.y.toInt())
+                    getColor()
                 }
                 MotionEvent.ACTION_MOVE -> {
 
@@ -263,10 +273,10 @@ class MainActivity : AppCompatActivity() {
             if (textureView.isAvailable){
                 savefile = File(appDir,filename)
                 val fos = FileOutputStream(savefile)
-                val bitmap = textureView.bitmap
+                bitmap = textureView.bitmap
                 bitmap.compress(Bitmap.CompressFormat.JPEG,100,fos)
                 Log.e("bitmap","$savefile")
-                fos.close()
+
             }
 
             if (savefile != null){
@@ -285,13 +295,30 @@ class MainActivity : AppCompatActivity() {
         captureSession.setRepeatingRequest(previewRequest,null,null)
     }
 
-    fun getAlbumStorageDir(albumName:String){
-        val file: File = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS),albumName)
+      fun getColor(){
+         val color_R = pixel and 0xff0000 shr 16
+         val color_G = pixel and 0xff0000 shr 16
+         val color_B = pixel and 0xff
+         Log.e("color","R:$color_R,G:$color_G,B:$color_B")
 
 
+          /* val width = bitmap.width
+           val height = bitmap.height
+           pixels = IntArray(width*height)
 
+
+            for (y in 0 until  height){
+                for(x in 0 until width){
+
+
+                } 
+
+            }*/
     }
 
 
 }
+
+
+
 
