@@ -14,7 +14,7 @@ class CanvasView @JvmOverloads constructor(
     var pathList = mutableListOf<Path>()
     var paint: Paint
     private var drawingPath : Path = Path()
-
+    lateinit var myBitmap: Bitmap
 
     init {
         paint = Paint().also {
@@ -28,7 +28,6 @@ class CanvasView @JvmOverloads constructor(
         super.onDraw(canvas)
 
         pathList.forEach {
-               // paint.setARGB(255,)
                 canvas?.drawPath(it,paint)
             }
             Log.e("path","$pathList")
@@ -64,5 +63,11 @@ class CanvasView @JvmOverloads constructor(
         drawingPath.reset()
 
     }
+
+    fun setColor(R:Int,G:Int,B:Int){
+        paint.setARGB(255,R,G,B)
+    }
+
+
 
 }

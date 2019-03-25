@@ -20,6 +20,7 @@ import android.view.Surface
 import android.view.TextureView
 import android.view.View
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColor
@@ -30,7 +31,7 @@ import java.nio.file.Files
 import java.util.*
 
 
-class MainActivity : AppCompatActivity() {
+open class MainActivity : AppCompatActivity() {
     companion object {
         const val PERMISSION_WRITE_STORAGE = 1000
         const val PERMISSION_READ_STORAGE = 1001
@@ -44,10 +45,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var previewRequestBuilder: CaptureRequest.Builder
     private lateinit var previewRequest: CaptureRequest
     private lateinit var captureSession: CameraCaptureSession
+    private lateinit var cv: CanvasView
     private lateinit var bitmap: Bitmap
-    private var getColor:Int = 0
-    private var pixel : Int = 0
-    lateinit var pixels : IntArray
+    private var pixel: Int = 0
+    lateinit var pixels: IntArray
 
     private var backgroundThread: HandlerThread? = null
     private var backgroundHandler: Handler? = null
@@ -70,11 +71,14 @@ class MainActivity : AppCompatActivity() {
         }
 
         //drawing
-        val cv: CanvasView = findViewById(R.id.canvas_view)
+        cv = findViewById(R.id.canvas_view)
         val button: ImageButton = findViewById(R.id.clear_button)
+
+
         button.setOnClickListener {
             cv.allDelete()
         }
+
 
     }
 
@@ -129,7 +133,8 @@ class MainActivity : AppCompatActivity() {
             previewRequestBuilder.addTarget(surface)
 
             //カメラのデータをTextureViewにプレビューしている
-            cameraDevice?.createCaptureSession(Arrays.asList(surface, imageReader?.surface),
+            cameraDevice?.createCaptureSession(
+                Arrays.asList(surface, imageReader?.surface),
                 object : CameraCaptureSession.StateCallback() {
                     override fun onConfigured(session: CameraCaptureSession) {
                         if (cameraDevice == null) return
@@ -240,8 +245,8 @@ class MainActivity : AppCompatActivity() {
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> {
                     onShutter()
-                    pixel = bitmap.getPixel(it.x.toInt(),it.y.toInt())
-                    getColor()
+                    pixel = bitmap.getPixel(it.x.toInt(), it.y.toInt())
+                    UpdateColor()
                 }
                 MotionEvent.ACTION_MOVE -> {
 
@@ -258,63 +263,54 @@ class MainActivity : AppCompatActivity() {
         } ?: return true
     }
 
-    private fun onShutter(){
-        val appDir = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),"cameraPreview")
-        if(!appDir.exists()){
+    private fun onShutter() {
+        val appDir =
+            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "cameraPreview")
+        if (!appDir.exists()) {
             appDir.mkdirs()
         }
 
         try {
             val filename = "iroiroDrawing.jpg"
-            var savefile : File? = null
+            var savefile: File? = null
 
 
             captureSession.stopRepeating()
-            if (textureView.isAvailable){
-                savefile = File(appDir,filename)
+            if (textureView.isAvailable) {
+                savefile = File(appDir, filename)
                 val fos = FileOutputStream(savefile)
                 bitmap = textureView.bitmap
-                bitmap.compress(Bitmap.CompressFormat.JPEG,100,fos)
-                Log.e("bitmap","$savefile")
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+                Log.e("bitmap", "$savefile")
 
             }
 
-            if (savefile != null){
+            if (savefile != null) {
                 Log.d("edulog", "Image Saved On: $savefile")
                 Toast.makeText(this, "Saved: $savefile", Toast.LENGTH_SHORT).show()
             }
 
-            } catch (e:CameraAccessException) {
+        } catch (e: CameraAccessException) {
             Log.d("edulog", "CameraAccessException_Error: $e")
-        } catch (e:FileNotFoundException){
+        } catch (e: FileNotFoundException) {
             Log.d("edulog", "FileNotFoundException_Error: $e")
-        } catch (e:IOException){
+        } catch (e: IOException) {
             Log.d("edulog", "IOException_Error: $e")
         }
 
-        captureSession.setRepeatingRequest(previewRequest,null,null)
+        captureSession.setRepeatingRequest(previewRequest, null, null)
     }
 
-      fun getColor(){
-         val color_R = pixel and 0xff0000 shr 16
-         val color_G = pixel and 0xff0000 shr 16
-         val color_B = pixel and 0xff
-         Log.e("color","R:$color_R,G:$color_G,B:$color_B")
+    fun UpdateColor()  {
+        val colorR = pixel and 0xff0000 shr 16
+        val colorG = pixel and 0xff0000 shr 16
+        val colorB = pixel and 0xff
+        Log.e("color", "R:$colorR,G:$colorG,B:$colorB")
 
-
-          /* val width = bitmap.width
-           val height = bitmap.height
-           pixels = IntArray(width*height)
-
-
-            for (y in 0 until  height){
-                for(x in 0 until width){
-
-
-                } 
-
-            }*/
+        cv.setColor(colorR,colorG,colorB)
     }
+
+
 
 
 }
