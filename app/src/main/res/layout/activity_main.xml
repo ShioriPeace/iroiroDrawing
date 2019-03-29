@@ -43,8 +43,6 @@
                 android:layout_alignBottom="@+id/canvas_view"
                 app:srcCompat="@android:drawable/ic_menu_delete"/>
 
-
-
     </RelativeLayout>
 
 

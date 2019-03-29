@@ -15,10 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
 import android.util.Log
 import android.util.Size
-import android.view.MotionEvent
-import android.view.Surface
-import android.view.TextureView
-import android.view.View
+import android.view.*
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -49,6 +46,7 @@ open class MainActivity : AppCompatActivity() {
     private lateinit var bitmap: Bitmap
     private var pixel: Int = 0
     lateinit var pixels: IntArray
+    private lateinit var rootView: SurfaceView
 
     private var backgroundThread: HandlerThread? = null
     private var backgroundHandler: Handler? = null
@@ -69,6 +67,7 @@ open class MainActivity : AppCompatActivity() {
         if ((writePermission != PackageManager.PERMISSION_GRANTED) || (readPermission != PackageManager.PERMISSION_GRANTED)) {
             requestStoragePermission()
         }
+
 
         //drawing
         cv = findViewById(R.id.canvas_view)
@@ -127,7 +126,7 @@ open class MainActivity : AppCompatActivity() {
     private fun createCameraPreviewSession() {
         try {
             val texture = textureView.surfaceTexture
-            texture.setDefaultBufferSize(previewSize.width, previewSize.height)
+           texture.setDefaultBufferSize(previewSize.width, previewSize.height)
             val surface = Surface(texture)
             previewRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
             previewRequestBuilder.addTarget(surface)
@@ -247,6 +246,7 @@ open class MainActivity : AppCompatActivity() {
                     onShutter()
                     pixel = bitmap.getPixel(it.x.toInt(), it.y.toInt())
                     UpdateColor()
+
                 }
                 MotionEvent.ACTION_MOVE -> {
 
@@ -301,8 +301,11 @@ open class MainActivity : AppCompatActivity() {
         captureSession.setRepeatingRequest(previewRequest, null, null)
     }
 
+
+
+
     fun UpdateColor()  {
-        val colorR = pixel and 0xff0000 shr 16
+        val colorR =pixel and 0xff0000 shr 16
         val colorG = pixel and 0xff0000 shr 16
         val colorB = pixel and 0xff
         Log.e("color", "R:$colorR,G:$colorG,B:$colorB")

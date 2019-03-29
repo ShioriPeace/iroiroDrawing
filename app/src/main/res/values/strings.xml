@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">iroiro_drawing</string>
     <string name="clear">CLEAR</string>
+    <string name="rgb">RGB</string>
 </resources>
