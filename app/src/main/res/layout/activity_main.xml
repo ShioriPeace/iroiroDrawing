@@ -15,13 +15,15 @@
         <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_above="@+id/center_view">
+                android:layout_above="@+id/center_view"
+                android:background="@drawable/border">
 
         <TextureView
                 android:id="@+id/cameraView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         </LinearLayout>
+
 
         <View
                 android:id="@+id/center_view"
