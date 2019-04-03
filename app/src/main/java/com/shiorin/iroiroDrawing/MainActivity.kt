@@ -45,9 +45,9 @@ open class MainActivity : AppCompatActivity() {
     private lateinit var previewRequest: CaptureRequest
     private lateinit var captureSession: CameraCaptureSession
     private lateinit var cv: CanvasView
-    private lateinit var bitmap: Bitmap
+    private lateinit  var bitmap: Bitmap
     private var pixel: Int = 0
-    lateinit var pixels: IntArray
+
     private lateinit var rootView: SurfaceView
 
     private var backgroundThread: HandlerThread? = null
@@ -239,33 +239,11 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        event?.let {
-            when (it.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    onShutter()
-                    pixel = bitmap.getPixel(it.x.toInt(), it.y.toInt())
-                    UpdateColor()
 
-                }
-                MotionEvent.ACTION_MOVE -> {
-
-                }
-                MotionEvent.ACTION_UP -> {
-                    onShutter()
-
-                }
-                else -> {
-
-                }
-            }
-            return true
-        } ?: return true
-    }
 
     private fun onShutter() {
-        val appDir =
-            File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "cameraPreview")
+        val appDir   = File(getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS), "cameraPreview")
+        
         if (!appDir.exists()) {
             appDir.mkdirs()
         }
@@ -309,6 +287,30 @@ open class MainActivity : AppCompatActivity() {
         Log.e("color", "R:$colorR,G:$colorG,B:$colorB")
 
         cv.setColor(colorR,colorG,colorB)
+    }
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        event?.let {
+            when (it.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    Log.e("touch","x:${it.x},y:${it.y}")
+                    onShutter()
+                    pixel = bitmap.getPixel(it.x.toInt(), it.y.toInt()-400)
+                    UpdateColor()
+                }
+                MotionEvent.ACTION_MOVE -> {
+
+                }
+                MotionEvent.ACTION_UP -> {
+                    onShutter()
+                    UpdateColor()
+                }
+                else -> {
+
+                }
+            }
+            return true
+        } ?: return true
     }
 
 

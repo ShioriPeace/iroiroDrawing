@@ -8,7 +8,8 @@ import android.view.MotionEvent
 import android.view.View
 import com.shiorin.iroiroDrawing.MainActivity
 
-class CanvasView @JvmOverloads constructor(
+class
+CanvasView @JvmOverloads constructor(
     context: Context?, attrs:AttributeSet? = null, defStyleSttr:Int = 0) : View(context,attrs,defStyleSttr) {
 
     var pathList = mutableListOf<Path>()
@@ -27,12 +28,11 @@ class CanvasView @JvmOverloads constructor(
         super.onDraw(canvas)
 
         pathList.forEach {
-                canvas?.drawPath(it,paint)
-            }
-        Log.e("path","$pathList")
-
-
+            canvas?.drawPath(drawingPath, paint)
+        }
+        // Log.e("path","$pathList")
     }
+
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         event?.let {
