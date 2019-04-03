@@ -10,6 +10,8 @@ import android.graphics.*
 import android.hardware.camera2.*
 import android.media.ImageReader
 import android.os.*
+import android.os.Environment.DIRECTORY_DOCUMENTS
+import android.os.Environment.getExternalStoragePublicDirectory
 import android.provider.DocumentsContract
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.Button
@@ -72,8 +74,6 @@ open class MainActivity : AppCompatActivity() {
         //drawing
         cv = findViewById(R.id.canvas_view)
         val button: ImageButton = findViewById(R.id.clear_button)
-
-
         button.setOnClickListener {
             cv.allDelete()
         }
@@ -276,11 +276,12 @@ open class MainActivity : AppCompatActivity() {
 
 
             captureSession.stopRepeating()
-            if (textureView.isAvailable) {
+            if (textureView.isAvailable && appDir.exists()) {
                 savefile = File(appDir, filename)
                 val fos = FileOutputStream(savefile)
                 bitmap = textureView.bitmap
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
+
                 Log.e("bitmap", "$savefile")
 
             }
@@ -300,9 +301,6 @@ open class MainActivity : AppCompatActivity() {
 
         captureSession.setRepeatingRequest(previewRequest, null, null)
     }
-
-
-
 
     fun UpdateColor()  {
         val colorR =pixel and 0xff0000 shr 16
