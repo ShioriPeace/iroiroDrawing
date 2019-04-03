@@ -5,7 +5,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
     <stroke
-        android:width="3dp"
+        android:width="5dp"
         android:color="@color/write"/>
+
+    <padding
+        android:top="10dp"
+        android:left="10dp"
+        android:bottom="10dp"
+        android:right="10dp"/>
 
 </shape>
