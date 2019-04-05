@@ -282,7 +282,7 @@ open class MainActivity : AppCompatActivity() {
 
     fun UpdateColor()  {
         val colorR =pixel and 0xff0000 shr 16
-        val colorG = pixel and 0xff0000 shr 16
+        val colorG = pixel and 0xff00 shr 8
         val colorB = pixel and 0xff
         Log.e("color", "R:$colorR,G:$colorG,B:$colorB")
 
