@@ -26,6 +26,9 @@
 ### 4/3
 - 真ん中以外を触ると落ちることが判明→解決済み
 
+### 4/5
+- 色が正しく出るようになったヽ(´▽｀)/  
+[参考にした神ページ](https://stackoverflow.com/questions/5669501/how-do-you-get-the-rgb-values-from-a-bitmap-on-an-android-device)
 
 
 
