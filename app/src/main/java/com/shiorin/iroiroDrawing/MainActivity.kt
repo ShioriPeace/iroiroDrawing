@@ -295,7 +295,7 @@ open class MainActivity : AppCompatActivity() {
                 MotionEvent.ACTION_DOWN -> {
                     Log.e("touch","x:${it.x},y:${it.y}")
                     onShutter()
-                    pixel = bitmap.getPixel(it.x.toInt(), it.y.toInt()-400)
+                    pixel = bitmap.getPixel(it.x.toInt(), it.y.toInt()-250)
                     UpdateColor()
                 }
                 MotionEvent.ACTION_MOVE -> {
