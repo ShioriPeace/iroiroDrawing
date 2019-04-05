@@ -242,14 +242,14 @@ open class MainActivity : AppCompatActivity() {
 
 
     private fun onShutter() {
-        val appDir   = File(getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS), "cameraPreview")
+        var appDir   = File(getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS),"cameraPreview")
         
         if (!appDir.exists()) {
             appDir.mkdirs()
         }
 
         try {
-            val filename = "iroiroDrawing.jpg"
+            val filename = "iroiroDrawing"
             var savefile: File? = null
 
 

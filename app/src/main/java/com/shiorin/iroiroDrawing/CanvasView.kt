@@ -15,6 +15,7 @@ CanvasView @JvmOverloads constructor(
     var pathList = mutableListOf<Path>()
     var paint: Paint
     private var drawingPath : Path = Path()
+    private var linePath : Path = Path()
 
     init {
         paint = Paint().also {
@@ -24,13 +25,31 @@ CanvasView @JvmOverloads constructor(
         }
     }
 
+    // 線の履歴(座標＋色)
+    internal inner class DrawLine(path: Path, paint: Paint) {
+        private val paint: Paint
+        private val path: Path
+
+        init {
+            this.paint = Paint(paint)
+            this.path = Path(path)
+        }
+
+        fun draw(canvas: Canvas) {
+            canvas.drawPath(this.path, this.paint)
+        }
+    }
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        pathList.forEach {
-            canvas?.drawPath(drawingPath, paint)
-        }
+        val view = DrawLine(Path(), Paint()) //ここで
+        view.draw()
         // Log.e("path","$pathList")
+        pathList.forEach {
+            canvas?.drawPath(linePath,paint)
+        }
+        canvas?.drawPath(drawingPath, paint)
     }
 
 
@@ -39,7 +58,7 @@ CanvasView @JvmOverloads constructor(
             when(it.action){
                 MotionEvent.ACTION_DOWN ->{
                     drawingPath.moveTo(it.x,it.y)
-                    pathList.add(drawingPath)
+
                 }
                 MotionEvent.ACTION_MOVE ->{
                     drawingPath.lineTo(it.x,it.y)
@@ -47,7 +66,8 @@ CanvasView @JvmOverloads constructor(
                 }
                 MotionEvent.ACTION_UP ->{
                     drawingPath.lineTo(it.x,it.y)
-                    invalidate()
+                    pathList.add(linePath)
+
                 }
                 else ->{
 
