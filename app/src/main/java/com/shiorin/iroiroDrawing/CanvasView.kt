@@ -44,10 +44,13 @@ CanvasView @JvmOverloads constructor(
         super.onDraw(canvas)
 
         val view = DrawLine(Path(), Paint()) //ここで
-        view.draw()
+
+        for (line in this.pathList){
+            view.draw(canvas!!)
+        }
+
         // Log.e("path","$pathList")
         pathList.forEach {
-            canvas?.drawPath(linePath,paint)
         }
         canvas?.drawPath(drawingPath, paint)
     }
