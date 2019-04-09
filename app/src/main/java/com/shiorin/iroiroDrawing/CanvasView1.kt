@@ -17,7 +17,9 @@
 //
 //    inner class DrawingView : View {
 //        // 履歴
+
 //        private lateinit var lines: MutableList<DrawLine>
+
 //        // 現在、描いている線の情報
 //        private val paint: Paint
 //        private val path: Path

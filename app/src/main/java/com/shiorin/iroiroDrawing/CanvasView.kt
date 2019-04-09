@@ -43,18 +43,19 @@ CanvasView @JvmOverloads constructor(
         }
     }
 
+
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
+
 //        val view = DrawLine(Path(), Paint()) //ここで
 
-        for (line in this.lines){
+        for (line in this.lines) {
             line.draw(canvas)
         }
 
         // Log.e("path","$pathList")
         pathList.forEach {
-//            canvas?.drawPath(drawingPath, paint)
         }
         canvas?.drawPath(drawingPath, paint)
     }
@@ -64,7 +65,7 @@ CanvasView @JvmOverloads constructor(
         event?.let {
             when(it.action){
                 MotionEvent.ACTION_DOWN ->{
-                    this.drawingPath.moveTo(it.x,it.y)
+                     this.drawingPath.moveTo(it.x,it.y)
                 }
                 MotionEvent.ACTION_MOVE ->{
                     this.drawingPath.lineTo(it.x,it.y)
@@ -75,8 +76,7 @@ CanvasView @JvmOverloads constructor(
                    // pathList.add(linePath)
                    // pathList.add(DrawLine(this.drawingPath,this.paint))
                     this.lines.add(DrawLine(this.drawingPath,this.paint))
-                   this.drawingPath.reset()
-                }
+                   this.drawingPath.reset() }
                 else ->{
 
                 }
