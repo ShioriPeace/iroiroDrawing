@@ -12,11 +12,10 @@ CanvasView @JvmOverloads constructor(
     context: Context?, attrs:AttributeSet? = null, defStyleSttr:Int = 0) : View(context,attrs,defStyleSttr) {
 
     // 履歴
-    private lateinit var lines: MutableList<DrawLine>
+    private var lines: MutableList<DrawLine>
     var pathList = mutableListOf<Path>()
     var paint: Paint
     private var drawingPath : Path = Path()
-    private var linePath : Path = Path()
 
     init {
         paint = Paint().also {
@@ -31,7 +30,6 @@ CanvasView @JvmOverloads constructor(
     internal inner class DrawLine(path: Path, paint: Paint) {
         private val paint: Paint
         private val path: Path
-        private lateinit var lines : MutableList<DrawLine>
 
         init {
             this.paint = Paint(paint)
@@ -76,7 +74,8 @@ CanvasView @JvmOverloads constructor(
                    // pathList.add(linePath)
                    // pathList.add(DrawLine(this.drawingPath,this.paint))
                     this.lines.add(DrawLine(this.drawingPath,this.paint))
-                   this.drawingPath.reset() }
+                   this.drawingPath.reset()
+                }
                 else ->{
 
                 }
@@ -87,8 +86,9 @@ CanvasView @JvmOverloads constructor(
 
     fun allDelete() {
         Log.e("delete","delete")
-        invalidate()
+        this.lines.clear()
         drawingPath.reset()
+        invalidate()
 
     }
 
