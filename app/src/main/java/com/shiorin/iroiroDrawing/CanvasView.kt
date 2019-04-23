@@ -1,7 +1,10 @@
 package com.shiorin.iroiroDrawing
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.Path
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -9,13 +12,14 @@ import android.view.View
 
 class
 CanvasView @JvmOverloads constructor(
-    context: Context?, attrs:AttributeSet? = null, defStyleSttr:Int = 0) : View(context,attrs,defStyleSttr) {
+    context: Context?, attrs: AttributeSet? = null, defStyleSttr: Int = 0
+) : View(context, attrs, defStyleSttr) {
 
     // 履歴
     private var lines: MutableList<DrawLine>
     var pathList = mutableListOf<Path>()
     var paint: Paint
-    private var drawingPath : Path = Path()
+    private var drawingPath: Path = Path()
 
     init {
         paint = Paint().also {
@@ -25,6 +29,7 @@ CanvasView @JvmOverloads constructor(
         }
         this.lines = ArrayList()
     }
+
 
     // 線の履歴(座標＋色)
     internal inner class DrawLine(path: Path, paint: Paint) {
@@ -61,42 +66,41 @@ CanvasView @JvmOverloads constructor(
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         event?.let {
-            when(it.action){
-                MotionEvent.ACTION_DOWN ->{
-                     this.drawingPath.moveTo(it.x,it.y)
+            when (it.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    this.drawingPath.moveTo(it.x, it.y)
                 }
-                MotionEvent.ACTION_MOVE ->{
-                    this.drawingPath.lineTo(it.x,it.y)
+                MotionEvent.ACTION_MOVE -> {
+                    this.drawingPath.lineTo(it.x, it.y)
                     invalidate()
                 }
-                MotionEvent.ACTION_UP ->{
-                    this.drawingPath.lineTo(it.x,it.y)
-                   // pathList.add(linePath)
-                   // pathList.add(DrawLine(this.drawingPath,this.paint))
-                    this.lines.add(DrawLine(this.drawingPath,this.paint))
-                   this.drawingPath.reset()
+                MotionEvent.ACTION_UP -> {
+                    this.drawingPath.lineTo(it.x, it.y)
+                    // pathList.add(linePath)
+                    // pathList.add(DrawLine(this.drawingPath,this.paint))
+                    this.lines.add(DrawLine(this.drawingPath, this.paint))
+                    this.drawingPath.reset()
                 }
-                else ->{
+                else -> {
 
                 }
             }
             return true
-        }?: return true
+        } ?: return true
     }
 
     fun allDelete() {
-        Log.e("delete","delete")
+        Log.e("delete", "delete")
         this.lines.clear()
         drawingPath.reset()
         invalidate()
 
     }
 
-    fun setColor(R:Int,G:Int,B:Int){
-        paint.setARGB(255,R,G,B)
-        Log.e("Color","R:$R,G:$G,B:$B")
+    fun setColor(R: Int, G: Int, B: Int) {
+        paint.setARGB(255, R, G, B)
+        Log.e("Color", "R:$R,G:$G,B:$B")
     }
-
 
 
 }

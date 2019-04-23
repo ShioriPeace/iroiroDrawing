@@ -1,32 +1,36 @@
 package com.shiorin.iroiroDrawing
 
 import android.annotation.SuppressLint
-import android.annotation.TargetApi
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.ImageFormat
+import android.graphics.SurfaceTexture
 import android.hardware.camera2.*
 import android.media.ImageReader
-import android.os.*
-import android.os.Environment.DIRECTORY_DOCUMENTS
+import android.os.Bundle
+import android.os.Environment
 import android.os.Environment.getExternalStoragePublicDirectory
-import android.provider.DocumentsContract
-import androidx.appcompat.app.AppCompatActivity
-import android.widget.Button
+import android.os.Handler
+import android.os.HandlerThread
+import android.provider.MediaStore
 import android.util.Log
 import android.util.Size
-import android.view.*
+import android.view.MotionEvent
+import android.view.Surface
+import android.view.SurfaceView
+import android.view.TextureView
 import android.widget.ImageButton
-import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import androidx.core.graphics.toColor
-import androidx.core.graphics.toColorLong
-import kotlinx.android.synthetic.main.activity_main.*
-import java.io.*
-import java.nio.file.Files
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -45,7 +49,7 @@ open class MainActivity : AppCompatActivity() {
     private lateinit var previewRequest: CaptureRequest
     private lateinit var captureSession: CameraCaptureSession
     private lateinit var cv: CanvasView
-    private lateinit  var bitmap: Bitmap
+    private lateinit var bitmap: Bitmap
     private var pixel: Int = 0
 
     private lateinit var rootView: SurfaceView
@@ -126,7 +130,7 @@ open class MainActivity : AppCompatActivity() {
     private fun createCameraPreviewSession() {
         try {
             val texture = textureView.surfaceTexture
-           texture.setDefaultBufferSize(previewSize.width, previewSize.height)
+            texture.setDefaultBufferSize(previewSize.width, previewSize.height)
             val surface = Surface(texture)
             previewRequestBuilder = cameraDevice!!.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW)
             previewRequestBuilder.addTarget(surface)
@@ -211,6 +215,7 @@ open class MainActivity : AppCompatActivity() {
                         arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
                         PERMISSION_WRITE_STORAGE
                     )
+                    cameraIntent()
                 }
                 .setNegativeButton(android.R.string.cancel) { _, _ ->
                     finish()
@@ -239,24 +244,41 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun cameraIntent() {
+        val cameraFolder = File(getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "IroiroDrawing")
+        cameraFolder.mkdirs()
+
+        val fileName: String = SimpleDateFormat("ddHHmmss", Locale.JAPAN).format(Date())
+        val filePath = String.format("%s%s.jpg", cameraFolder.path, fileName)
+        Log.d("debug", "filePath:$filePath")
+
+        intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraFolder)
+
+    }
 
 
     private fun onShutter() {
-        var appDir   = File(getExternalStoragePublicDirectory(DIRECTORY_DOCUMENTS),"cameraPreview")
-        
-        if (!appDir.exists()) {
-            appDir.mkdirs()
+        val cameraFolder = File(getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "IroiroDrawing")
+
+        if (!cameraFolder.exists()) {
+            cameraFolder.mkdirs()
         }
 
+        val fileName: String = SimpleDateFormat("ddHHmmss", Locale.JAPAN).format(Date())
+        val filePath = String.format("%s%s.jpg", cameraFolder.path, fileName)
+        Log.d("debug", "filePath:$filePath")
+
         try {
-            val filename = "iroiroDrawing"
             var savefile: File? = null
 
 
             captureSession.stopRepeating()
-            if (textureView.isAvailable && appDir.exists()) {
-                savefile = File(appDir, filename)
-                val fos = FileOutputStream(savefile)
+            if (textureView.isAvailable && cameraFolder.exists()) {
+                val fileName: String = SimpleDateFormat("ddHHmmss", Locale.JAPAN).format(Date())
+                val filePath = String.format("%s%s.jpg", cameraFolder.path, fileName)
+                savefile = File(cameraFolder, filePath)
+                val fos = FileOutputStream(filePath)
                 bitmap = textureView.bitmap
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos)
 
@@ -280,22 +302,22 @@ open class MainActivity : AppCompatActivity() {
         captureSession.setRepeatingRequest(previewRequest, null, null)
     }
 
-    fun UpdateColor()  {
-        val colorR =pixel and 0xff0000 shr 16
+    fun UpdateColor() {
+        val colorR = pixel and 0xff0000 shr 16
         val colorG = pixel and 0xff00 shr 8
         val colorB = pixel and 0xff
         Log.e("color", "R:$colorR,G:$colorG,B:$colorB")
 
-        cv.setColor(colorR,colorG,colorB)
+        cv.setColor(colorR, colorG, colorB)
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         event?.let {
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    Log.e("touch","x:${it.x},y:${it.y}")
+                    Log.e("touch", "x:${it.x},y:${it.y}")
                     onShutter()
-                    pixel = bitmap.getPixel(it.x.toInt(), it.y.toInt()-250)
+                    pixel = bitmap.getPixel(it.x.toInt(), it.y.toInt() - 250)
                     UpdateColor()
                 }
                 MotionEvent.ACTION_MOVE -> {
@@ -312,8 +334,6 @@ open class MainActivity : AppCompatActivity() {
             return true
         } ?: return true
     }
-
-
 
 
 }
