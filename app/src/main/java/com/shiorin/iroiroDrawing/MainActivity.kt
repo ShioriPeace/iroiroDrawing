@@ -213,7 +213,6 @@ open class MainActivity : AppCompatActivity() {
                         arrayOf(android.Manifest.permission.WRITE_EXTERNAL_STORAGE),
                         PERMISSION_WRITE_STORAGE
                     )
-                    cameraIntent()
                 }
                 .setNegativeButton(android.R.string.cancel) { _, _ ->
                     finish()
@@ -248,7 +247,7 @@ open class MainActivity : AppCompatActivity() {
         if (!cameraFolder.exists()) {
             cameraFolder.mkdirs()
         }
-        
+
 
         try {
             var savefile: File? = null
