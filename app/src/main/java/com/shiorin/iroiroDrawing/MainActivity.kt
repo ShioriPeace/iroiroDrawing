@@ -3,7 +3,6 @@ package com.shiorin.iroiroDrawing
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageFormat
@@ -15,7 +14,6 @@ import android.os.Environment
 import android.os.Environment.getExternalStoragePublicDirectory
 import android.os.Handler
 import android.os.HandlerThread
-import android.provider.MediaStore
 import android.util.Log
 import android.util.Size
 import android.view.MotionEvent
@@ -244,30 +242,13 @@ open class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun cameraIntent() {
-        val cameraFolder = File(getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "IroiroDrawing")
-        cameraFolder.mkdirs()
-
-        val fileName: String = SimpleDateFormat("ddHHmmss", Locale.JAPAN).format(Date())
-        val filePath = String.format("%s%s.jpg", cameraFolder.path, fileName)
-        Log.d("debug", "filePath:$filePath")
-
-        intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, cameraFolder)
-
-    }
-
-
     private fun onShutter() {
         val cameraFolder = File(getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM), "IroiroDrawing")
 
         if (!cameraFolder.exists()) {
             cameraFolder.mkdirs()
         }
-
-        val fileName: String = SimpleDateFormat("ddHHmmss", Locale.JAPAN).format(Date())
-        val filePath = String.format("%s%s.jpg", cameraFolder.path, fileName)
-        Log.d("debug", "filePath:$filePath")
+        
 
         try {
             var savefile: File? = null
