@@ -41,7 +41,7 @@ open class MainActivity : AppCompatActivity() {
     private lateinit var textureView: TextureView
     private var imageReader: ImageReader? = null
     private var cameraDevice: CameraDevice? = null
-    private val previewSize: Size = Size(300, 300)
+    private val previewSize: Size = Size(640, 480)
 
     private lateinit var previewRequestBuilder: CaptureRequest.Builder
     private lateinit var previewRequest: CaptureRequest
@@ -81,6 +81,11 @@ open class MainActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    override fun onStop() { //　アプリがバックグラウンド時にカメラが動いていて欲しくないからstop
+        cameraDevice?.close()
+        super.onStop()
     }
 
 
@@ -314,7 +319,6 @@ open class MainActivity : AppCompatActivity() {
             return true
         } ?: return true
     }
-
 
 }
 
